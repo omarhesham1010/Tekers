@@ -135,6 +135,13 @@ h1, h2, h3, h4, h5, h6 {
     text-shadow: 0 0 10px var(--color-glow);
 }
 
+.logo-image {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;
@@ -985,6 +992,11 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1.5fr 2fr;
     gap: 4rem;
     margin-bottom: 3rem;
+}
+
+.footer-brand .logo-image {
+    height: 60px;
+    width: auto;
 }
 
 .footer-brand p {
