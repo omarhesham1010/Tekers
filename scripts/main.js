@@ -10,6 +10,19 @@ const navLinks = document.querySelectorAll('.nav-link');
 const contactForm = document.getElementById('contact-form');
 const statNumbers = document.querySelectorAll('.stat-number');
 
+// Handle cross-page navigation links (for services/projects pages)
+document.addEventListener('DOMContentLoaded', () => {
+    // Find all links that point to index.html with hash
+    const crossPageLinks = document.querySelectorAll('a[href*="index.html#"]');
+    
+    crossPageLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Let the browser navigate, the hash will be handled on the new page
+            // No preventDefault needed - we want the navigation to happen
+        });
+    });
+});
+
 // Navbar Scroll Effect
 window.addEventListener('scroll', () => {
     if (window.scrollY > 50) {
@@ -34,21 +47,33 @@ navLinks.forEach(link => {
 });
 
 // Smooth Scrolling for Navigation Links
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 80;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
+if (navLinks && navLinks.length > 0) {
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            
+            // Check if link is to another page (contains index.html)
+            if (href && href.includes('index.html#')) {
+                // Allow navigation to happen, then scroll on the new page
+                // The hash will be handled by the code below
+                return; // Let the browser handle the navigation
+            }
+            
+            // For same-page links, prevent default and smooth scroll
+            e.preventDefault();
+            const targetId = href;
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-});
+}
 
 // Active Navigation Link on Scroll
 const sections = document.querySelectorAll('.section');
@@ -203,19 +228,43 @@ document.querySelectorAll('.service-card, .project-card, .info-card').forEach(el
     });
 });
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Set initial active nav link
+// Handle hash navigation when page loads (for cross-page navigation)
+function scrollToHash() {
     if (window.location.hash) {
         const hash = window.location.hash;
-        navLinks.forEach(link => {
-            if (link.getAttribute('href') === hash) {
-                link.classList.add('active');
-            }
-        });
-    } else {
-        navLinks[0].classList.add('active');
+        const targetSection = document.querySelector(hash);
+        
+        if (targetSection) {
+            // Wait a bit for page to fully load
+            setTimeout(() => {
+                const offsetTop = targetSection.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
     }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Set initial active nav link (only if navLinks exist - i.e., on index.html)
+    if (navLinks && navLinks.length > 0) {
+        if (window.location.hash) {
+            const hash = window.location.hash;
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === hash || link.getAttribute('href').endsWith(hash)) {
+                    link.classList.add('active');
+                }
+            });
+        } else {
+            navLinks[0].classList.add('active');
+        }
+    }
+    
+    // Scroll to hash if present (for navigation from other pages)
+    scrollToHash();
     
     // Add loading animation
     document.body.style.opacity = '0';
@@ -223,6 +272,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.transition = 'opacity 0.5s ease';
         document.body.style.opacity = '1';
     }, 100);
+});
+
+// Also handle hash changes after page load
+window.addEventListener('hashchange', () => {
+    scrollToHash();
+    
+    // Update active nav link (only if navLinks exist - i.e., on index.html)
+    if (navLinks && navLinks.length > 0) {
+        const hash = window.location.hash;
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === hash || link.getAttribute('href').endsWith(hash)) {
+                link.classList.add('active');
+            }
+        });
+    }
 });
 
 // Smooth reveal animation for sections
