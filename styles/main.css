@@ -198,9 +198,101 @@ h6 {
     gap: 1rem;
 }
 
-.google-signin-container {
+
+
+/* Custom Google Sign-In with Overlay */
+.signin-wrapper {
+    position: relative;
+    width: 285px;
+    height: 48px;
+    border-radius: 99px;
+    /* Pill shape */
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.google-btn-hidden {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    opacity: 0.01;
+    /* Invisible but clickable */
+    overflow: hidden;
+}
+
+/* Force the iframe inside to fill the container */
+.google-btn-hidden iframe {
+    width: 120% !important;
+    height: 120% !important;
+    transform: scale(1.1);
+    /* Ensure it covers everything */
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    cursor: pointer;
+}
+
+.btn-custom-signin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-primary);
+    /* Site Blue */
+    color: var(--color-bg-dark);
+    border: none;
+    border-radius: 99px;
     display: flex;
     align-items: center;
+    padding: 0 4px;
+    z-index: 1;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    transition: var(--transition-normal);
+    white-space: nowrap;
+    /* Prevent text wrapping */
+}
+
+.signin-wrapper:hover .btn-custom-signin {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+    transform: translateY(-1px);
+    background: var(--color-primary-light);
+}
+
+.btn-icon-bg {
+    background: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    /* Prevent icon from shrinking */
+}
+
+/* Ensure pure left alignment */
+.btn-custom-signin {
+    padding-left: 4px;
+    justify-content: flex-start;
+    gap: 0;
+    /* Managed by padding/margins */
+}
+
+.btn-text {
+    flex-grow: 1;
+    text-align: center;
+    padding-right: 44px;
+    /* Balance icon visual weight */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* Custom Sign-In Button (fallback) */
@@ -225,13 +317,76 @@ h6 {
     box-shadow: 0 0 10px var(--color-glow);
 }
 
-/* Override Google Sign-In button styles to match dark theme */
+/* Responsive Mobile Styles */
+@media (max-width: 768px) {
+    .signin-wrapper {
+        width: 200px;
+        /* Smaller width */
+        height: 42px;
+        /* Smaller height */
+    }
+
+    .btn-custom-signin {
+        font-size: 0.85rem;
+    }
+
+    .btn-icon-bg {
+        width: 34px;
+        height: 34px;
+        margin-right: 10px;
+    }
+
+    .btn-text {
+        padding-right: 34px;
+        /* Adjust balance */
+    }
+}
+
+@media (max-width: 480px) {
+    .signin-wrapper {
+        width: 42px;
+        /* Collapse to icon only for very small screens */
+        transition: width 0.3s ease;
+    }
+
+    .signin-wrapper:hover {
+        width: 200px;
+        /* Expand on touch/hover if needed */
+    }
+
+    .btn-text {
+        opacity: 0;
+        width: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .signin-wrapper:hover .btn-text {
+        opacity: 1;
+        width: auto;
+        padding-right: 20px;
+        transition: opacity 0.3s ease 0.1s;
+    }
+
+    .btn-icon-bg {
+        margin-right: 0;
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-custom-signin {
+        justify-content: center;
+        padding: 0;
+    }
+}
+
 .google-signin-container iframe {
     filter: brightness(0.9) contrast(1.1);
 }
 
 /* Ensure Google button container doesn't break layout */
-.google-signin-container > div {
+.google-signin-container>div {
     display: flex;
     align-items: center;
 }
@@ -1341,7 +1496,7 @@ h6 {
     .nav-menu.active {
         left: 0;
     }
-    
+
     .nav-toggle {
         display: flex;
     }

@@ -14,7 +14,7 @@ const statNumbers = document.querySelectorAll('.stat-number');
 document.addEventListener('DOMContentLoaded', () => {
     // Find all links that point to index.html with hash
     const crossPageLinks = document.querySelectorAll('a[href*="index.html#"]');
-    
+
     crossPageLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             // Let the browser navigate, the hash will be handled on the new page
@@ -51,19 +51,19 @@ if (navLinks && navLinks.length > 0) {
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
-            
+
             // Check if link is to another page (contains index.html)
             if (href && href.includes('index.html#')) {
                 // Allow navigation to happen, then scroll on the new page
                 // The hash will be handled by the code below
                 return; // Let the browser handle the navigation
             }
-            
+
             // For same-page links, prevent default and smooth scroll
             e.preventDefault();
             const targetId = href;
             const targetSection = document.querySelector(targetId);
-            
+
             if (targetSection) {
                 const offsetTop = targetSection.offsetTop - 80;
                 window.scrollTo({
@@ -85,7 +85,7 @@ window.addEventListener('scroll', () => {
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.clientHeight;
-        
+
         if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
             current = section.getAttribute('id');
         }
@@ -179,7 +179,7 @@ statNumbers.forEach(stat => {
 // Configuration
 // IMPORTANT: Replace with your Google OAuth 2.0 Client ID from Google Cloud Console
 // Get it from: https://console.cloud.google.com/apis/credentials
-const GOOGLE_CLIENT_ID = ''; // e.g., '123456789-abcdefghijklmnop.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = '1044015226252-0844n792h6l2116g6d33u83e9t2ot09s.apps.googleusercontent.com'; // e.g., '123456789-abcdefghijklmnop.apps.googleusercontent.com'
 
 // User state management
 let currentUser = null;
@@ -231,42 +231,36 @@ function getBrowserInfo() {
 
 // Update header UI based on auth state
 function updateHeaderUI() {
-    if (!googleSigninContainer || !userProfile || !userAvatar) return;
-    
+    const wrapper = document.getElementById('signin-wrapper');
+    const profile = document.getElementById('user-profile');
+
+    if (!wrapper || !profile || !userAvatar) return;
+
     if (currentUser) {
         // User is signed in - show avatar and logout
-        if (googleSigninContainer) googleSigninContainer.style.display = 'none';
-        if (userProfile) userProfile.style.display = 'flex';
+        wrapper.style.display = 'none';
+        profile.style.display = 'flex';
         if (userAvatar) {
             userAvatar.src = currentUser.picture || '';
             userAvatar.alt = currentUser.name || 'User Avatar';
         }
     } else {
         // User is not signed in - show sign-in button
-        if (googleSigninContainer) googleSigninContainer.style.display = 'flex';
-        if (userProfile) userProfile.style.display = 'none';
+        wrapper.style.display = 'block';
+        profile.style.display = 'none';
     }
 }
 
 // Initialize Google Sign-In
 function initializeGoogleSignIn() {
-    if (!googleSigninContainer) return;
-    
+    // Target the hidden container for the actual Google button
+    const googleBtnContainer = document.getElementById('google-signin-button');
+
+    if (!googleBtnContainer) return;
+
     if (typeof google !== 'undefined' && google.accounts) {
         if (!GOOGLE_CLIENT_ID) {
-            console.warn('Google Client ID not configured. Please add your Client ID in scripts/main.js');
-            // Show a styled sign-in button placeholder
-            googleSigninContainer.innerHTML = `
-                <button class="custom-signin-btn" onclick="alert('Please configure Google Client ID in scripts/main.js')">
-                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px;">
-                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
-                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.965-2.184l-2.908-2.258c-.806.54-1.837.86-3.057.86-2.35 0-4.34-1.587-5.053-3.72H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
-                        <path fill="#FBBC05" d="M3.943 10.698c-.18-.54-.282-1.117-.282-1.698s.102-1.158.282-1.698V4.97H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.03l2.986-2.332z"/>
-                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.97L3.943 7.302C4.66 5.167 6.65 3.58 9 3.58z"/>
-                    </svg>
-                    Sign in with Google
-                </button>
-            `;
+            console.warn('Google Client ID not configured.');
             return;
         }
 
@@ -277,20 +271,22 @@ function initializeGoogleSignIn() {
             cancel_on_tap_outside: true
         });
 
-        // Render sign-in button with minimal styling
+        // Render invisible sign-in button over the custom one
         google.accounts.id.renderButton(
-            googleSigninContainer,
+            googleBtnContainer,
             {
                 type: 'standard',
-                theme: 'filled_blue',
-                size: 'medium',
+                theme: 'filled_blue', // Invisible
+                size: 'large',
                 text: 'signin_with',
-                shape: 'rectangular',
-                logo_alignment: 'left',
-                width: 200,
+                shape: 'pill',
+                width: 250,         // Ensure it covers click area
                 locale: 'en'
             }
         );
+
+        // Ensure opacity is enforce via JS as a fallback
+        googleBtnContainer.style.opacity = '0.01';
     }
 }
 
@@ -300,7 +296,7 @@ function handleCredentialResponse(response) {
         // Decode JWT token (basic decode without verification for frontend)
         const base64Url = response.credential.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 
@@ -333,16 +329,16 @@ function handleCredentialResponse(response) {
 // Trigger Google Sign-In popup
 function triggerGoogleSignIn() {
     if (isSigningIn || !googleSigninContainer) return;
-    
+
     isSigningIn = true;
-    
+
     // Programmatically click the Google Sign-In button to trigger popup
     const findAndClickButton = (attempts = 0) => {
         if (!googleSigninContainer) {
             isSigningIn = false;
             return;
         }
-        
+
         const button = googleSigninContainer.querySelector('div[role="button"], iframe');
         if (button) {
             // Try clicking the button directly
@@ -377,7 +373,7 @@ function triggerGoogleSignIn() {
             showNotification('Please click the Sign-In button in the header.', 'info');
         }
     };
-    
+
     findAndClickButton();
 }
 
@@ -385,15 +381,15 @@ function triggerGoogleSignIn() {
 function handleLogout() {
     currentUser = null;
     updateHeaderUI();
-    
+
     // Clear any pending messages
     window.pendingMessage = null;
-    
+
     // Sign out from Google
     if (typeof google !== 'undefined' && google.accounts) {
         google.accounts.id.disableAutoSelect();
     }
-    
+
     showNotification('Signed out successfully', 'success');
 }
 
@@ -416,9 +412,9 @@ function showNotification(message, type = 'info') {
         animation: slideIn 0.3s ease;
         font-weight: 500;
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => notification.remove(), 300);
@@ -463,7 +459,7 @@ function sendEmailMessage(formData) {
 
     const submitButton = contactForm.querySelector('.btn-submit');
     const originalText = submitButton.innerHTML;
-    
+
     submitButton.innerHTML = '<span>Sending...</span>';
     submitButton.disabled = true;
 
@@ -498,10 +494,10 @@ function sendEmailMessage(formData) {
                 submitButton.innerHTML = '<span>Message Sent!</span>';
                 submitButton.style.background = 'linear-gradient(135deg, #00ff88 0%, #00cc6a 100%)';
                 showNotification('Message sent successfully!', 'success');
-                
+
                 // Reset form
                 contactForm.reset();
-                
+
                 // Reset button after 3 seconds
                 setTimeout(() => {
                     submitButton.innerHTML = originalText;
@@ -526,7 +522,7 @@ function sendEmailMessage(formData) {
 if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         // Get form data
         const formData = {
             subject: document.getElementById('subject').value.trim(),
@@ -543,10 +539,10 @@ if (contactForm) {
         if (!currentUser) {
             // Store the message data
             window.pendingMessage = formData;
-            
+
             // Show notification
             showNotification('Signing in to send your message...', 'info');
-            
+
             // Trigger Google Sign-In
             triggerGoogleSignIn();
         } else {
@@ -564,18 +560,19 @@ document.addEventListener('DOMContentLoaded', () => {
     userProfile = document.getElementById('user-profile');
     userAvatar = document.getElementById('user-avatar');
     logoutButton = document.getElementById('logout-button');
-    
+
     // Logout button handler
     if (logoutButton) {
         logoutButton.addEventListener('click', handleLogout);
     }
-    
+
     // Wait for Google Identity Services to load
     const checkGoogle = setInterval(() => {
         if (typeof google !== 'undefined' && google.accounts) {
             clearInterval(checkGoogle);
             initializeGoogleSignIn();
             updateHeaderUI();
+            console.log('✅ [System] Google Identity Services loaded successfully');
         }
     }, 100);
 
@@ -583,7 +580,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         clearInterval(checkGoogle);
         if (typeof google === 'undefined' || !google.accounts) {
-            console.warn('Google Identity Services failed to load');
+            console.error('❌ [System] Google Identity Services failed to load. Check internet connection or script inclusion.');
+            showNotification('Google Sign-In unavailable', 'error');
+
+            // Show fallback button if container exists
+            if (googleSigninContainer) {
+                googleSigninContainer.innerHTML = '<button class="btn btn-secondary" onclick="window.location.reload()">Retry Sign-In</button>';
+            }
         }
     }, 5000);
 });
@@ -593,7 +596,7 @@ window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
     const heroVisual = document.querySelector('.hero-visual');
     const heroText = document.querySelector('.hero-text');
-    
+
     if (heroVisual && scrolled < window.innerHeight) {
         heroVisual.style.transform = `translateY(${scrolled * 0.3}px)`;
         heroText.style.transform = `translateY(${scrolled * 0.1}px)`;
@@ -602,7 +605,7 @@ window.addEventListener('scroll', () => {
 
 // Add glow effect on hover for interactive elements
 document.querySelectorAll('.service-card, .project-card, .info-card').forEach(element => {
-    element.addEventListener('mouseenter', function() {
+    element.addEventListener('mouseenter', function () {
         this.style.transition = 'all 0.3s ease';
     });
 });
@@ -612,7 +615,7 @@ function scrollToHash() {
     if (window.location.hash) {
         const hash = window.location.hash;
         const targetSection = document.querySelector(hash);
-        
+
         if (targetSection) {
             // Wait a bit for page to fully load
             setTimeout(() => {
@@ -641,10 +644,10 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks[0].classList.add('active');
         }
     }
-    
+
     // Scroll to hash if present (for navigation from other pages)
     scrollToHash();
-    
+
     // Add loading animation
     document.body.style.opacity = '0';
     setTimeout(() => {
@@ -656,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Also handle hash changes after page load
 window.addEventListener('hashchange', () => {
     scrollToHash();
-    
+
     // Update active nav link (only if navLinks exist - i.e., on index.html)
     if (navLinks && navLinks.length > 0) {
         const hash = window.location.hash;
@@ -676,7 +679,7 @@ revealSections.forEach(section => {
     section.style.opacity = '0';
     section.style.transform = 'translateY(30px)';
     section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    
+
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -685,7 +688,7 @@ revealSections.forEach(section => {
             }
         });
     }, { threshold: 0.2 });
-    
+
     sectionObserver.observe(section);
 });
 
@@ -702,7 +705,7 @@ document.addEventListener('mousemove', (e) => {
         trail.style.left = e.clientX + 'px';
         trail.style.top = e.clientY + 'px';
         document.body.appendChild(trail);
-        
+
         setTimeout(() => {
             trail.remove();
         }, 500);
