@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,17 @@
     <link rel="stylesheet" href="../../styles/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="../../index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                <a href="../../index.html"
+                    style="display: flex; align-items: center; text-decoration: none; color: inherit;">
                     <img src="../../img/logo.png" alt="Tekers Logo" class="logo-image">
                 </a>
             </div>
@@ -38,35 +43,63 @@
             <div class="detail-header">
                 <a href="../../index.html#projects" class="back-link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                     <span>Back to Projects</span>
                 </a>
                 <div class="project-image-header">
-                    <img src="../../img/projects/project-1.svg" alt="Enterprise Cloud Platform">
+                    <img src="../../img/projects/project-1.jpg" alt="Enterprise Cloud Platform">
                 </div>
-                <h1 class="detail-title">Enterprise Cloud Platform</h1>
+                <h1 class="detail-title">Dental Clinic Management System</h1>
                 <p class="detail-subtitle">Scalable infrastructure supporting millions of users with 99.9% uptime</p>
                 <span class="project-category">System Architecture</span>
+
+                <!-- Project Action Buttons -->
+                <div class="project-action-buttons">
+                    <a href="https://web.facebook.com/share/v/1AJVFdcRvi/" class="btn btn-primary project-action-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20">
+                            <circle cx="12" cy="12" r="10" />
+                            <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
+                        </svg>
+                        <span>Watch Video</span>
+                    </a>
+                    <a href="#" class="btn btn-secondary project-action-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="20" height="20">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <polyline points="15 3 21 3 21 9" />
+                            <line x1="10" y1="14" x2="21" y2="3" />
+                        </svg>
+                        <span>Live Demo</span>
+                    </a>
+                </div>
             </div>
 
             <div class="detail-content">
                 <div class="detail-main">
                     <h2>Project Overview</h2>
-                    <p>We designed and implemented a comprehensive enterprise cloud platform that serves millions of users worldwide. This scalable infrastructure solution provides high availability, performance, and reliability for critical business operations.</p>
+                    <p>We designed and implemented a comprehensive dental clinic management system that streamlines
+                        daily operations and enhances patient care.
+                        The system digitizes appointments, patient records, billing, and clinic scheduling in one
+                        centralized platform, improving efficiency, accuracy, and overall workflow for dental clinics.
+                    </p>
 
                     <h2>Challenge</h2>
-                    <p>The client needed a cloud infrastructure that could handle rapid growth, support millions of concurrent users, and maintain 99.9% uptime. The solution had to be cost-effective, secure, and easily maintainable.</p>
+                    <p>The clinic needed a system to replace manual and fragmented processes.
+                        Key challenges included managing appointments efficiently, organizing patient medical records,
+                        handling invoices and payments, and controlling clinic schedules — all while supporting multiple
+                        user roles (doctor and receptionist) with secure access and ease of use.</p>
 
                     <h2>Solution</h2>
-                    <p>We architected a multi-cloud solution using microservices architecture, container orchestration, and automated scaling. The platform includes:</p>
+                    <p>We developed a web-based dental clinic management system using a modular and scalable
+                        architecture.
+                        The platform includes:</p>
                     <ul class="feature-list">
-                        <li>Multi-region deployment for global reach</li>
-                        <li>Auto-scaling infrastructure that adapts to load</li>
-                        <li>Comprehensive monitoring and alerting</li>
-                        <li>Automated backup and disaster recovery</li>
-                        <li>Advanced security and compliance measures</li>
-                        <li>Cost optimization through resource management</li>
+                        <li>Role-based authentication (Doctor & Receptionist)</li>
+                        <li>Dynamic appointment scheduling with configurable clinic working hours</li>
+                        <li>Patient management with medical history and visit tracking</li>
+                        <li>Invoicing and payment tracking system</li>
+                        <li>Centralized dashboard for daily clinic operations</li>
+                        <li>Flexible settings for visit duration and available time slots</li>
                     </ul>
 
                     <h2>Results</h2>
@@ -91,14 +124,13 @@
 
                     <h2>Technologies Used</h2>
                     <div class="tech-tags">
-                        <span class="tech-tag">Kubernetes</span>
-                        <span class="tech-tag">Docker</span>
-                        <span class="tech-tag">AWS</span>
-                        <span class="tech-tag">Terraform</span>
-                        <span class="tech-tag">Prometheus</span>
-                        <span class="tech-tag">Grafana</span>
-                        <span class="tech-tag">Microservices</span>
-                        <span class="tech-tag">API Gateway</span>
+                        <span class="tech-tag">Django</span>
+                        <span class="tech-tag">Django REST Framework</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Authentication & Authorization</span>
+                        <span class="tech-tag">HTML5</span>
+                        <span class="tech-tag">CSS3 / Tailwind CSS</span>
+                        <span class="tech-tag">JavaScript</span>
                     </div>
                 </div>
 
@@ -110,10 +142,10 @@
                                 <strong>Category:</strong> System Architecture
                             </div>
                             <div class="meta-item">
-                                <strong>Duration:</strong> 12 months
+                                <strong>Duration:</strong> 1 week
                             </div>
                             <div class="meta-item">
-                                <strong>Team Size:</strong> 15 members
+                                <strong>Team Size:</strong> 2 members
                             </div>
                             <div class="meta-item">
                                 <strong>Status:</strong> Completed
@@ -131,7 +163,8 @@
                     <div class="sidebar-card">
                         <h3>Get In Touch</h3>
                         <p>Interested in similar solutions? Let's discuss your project.</p>
-                        <a href="../../index.html#contact" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Contact Us</a>
+                        <a href="../../index.html#contact" class="btn btn-primary"
+                            style="width: 100%; justify-content: center; margin-top: 1rem;">Contact Us</a>
                     </div>
                 </div>
             </div>
@@ -182,4 +215,5 @@
 
     <script src="../../scripts/main.js"></script>
 </body>
+
 </html>
