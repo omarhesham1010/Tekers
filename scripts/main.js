@@ -172,42 +172,421 @@ statNumbers.forEach(stat => {
     statObserver.observe(stat);
 });
 
-// Contact Form Handling
+// ============================================
+// Google Authentication & EmailJS Integration
+// ============================================
+
+// Configuration
+// IMPORTANT: Replace with your Google OAuth 2.0 Client ID from Google Cloud Console
+// Get it from: https://console.cloud.google.com/apis/credentials
+const GOOGLE_CLIENT_ID = ''; // e.g., '123456789-abcdefghijklmnop.apps.googleusercontent.com'
+
+// User state management
+let currentUser = null;
+let isSigningIn = false;
+
+// DOM Elements for Auth (will be set on DOMContentLoaded)
+let googleSigninContainer;
+let userProfile;
+let userAvatar;
+let logoutButton;
+
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'service_nf8rry8';
+const EMAILJS_TEMPLATE_ID = 'template_89gkm91';
+const EMAILJS_PUBLIC_KEY = 'VBtsTa6iew5vcaeG-';
+
+// Initialize EmailJS
+if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
+// Get browser and device information
+function getBrowserInfo() {
+    const ua = navigator.userAgent;
+    let browser = 'Unknown';
+    let deviceType = 'Desktop';
+    let os = 'Unknown';
+
+    // Detect browser
+    if (ua.includes('Chrome') && !ua.includes('Edg')) browser = 'Chrome';
+    else if (ua.includes('Firefox')) browser = 'Firefox';
+    else if (ua.includes('Safari') && !ua.includes('Chrome')) browser = 'Safari';
+    else if (ua.includes('Edg')) browser = 'Edge';
+    else if (ua.includes('Opera') || ua.includes('OPR')) browser = 'Opera';
+
+    // Detect device type
+    if (/tablet|ipad|playbook|silk/i.test(ua)) deviceType = 'Tablet';
+    else if (/mobile|iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/i.test(ua)) deviceType = 'Mobile';
+
+    // Detect OS
+    if (ua.includes('Windows')) os = 'Windows';
+    else if (ua.includes('Mac')) os = 'macOS';
+    else if (ua.includes('Linux')) os = 'Linux';
+    else if (ua.includes('Android')) os = 'Android';
+    else if (ua.includes('iOS') || ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+
+    return { browser, deviceType, os };
+}
+
+// Update header UI based on auth state
+function updateHeaderUI() {
+    if (!googleSigninContainer || !userProfile || !userAvatar) return;
+    
+    if (currentUser) {
+        // User is signed in - show avatar and logout
+        if (googleSigninContainer) googleSigninContainer.style.display = 'none';
+        if (userProfile) userProfile.style.display = 'flex';
+        if (userAvatar) {
+            userAvatar.src = currentUser.picture || '';
+            userAvatar.alt = currentUser.name || 'User Avatar';
+        }
+    } else {
+        // User is not signed in - show sign-in button
+        if (googleSigninContainer) googleSigninContainer.style.display = 'flex';
+        if (userProfile) userProfile.style.display = 'none';
+    }
+}
+
+// Initialize Google Sign-In
+function initializeGoogleSignIn() {
+    if (!googleSigninContainer) return;
+    
+    if (typeof google !== 'undefined' && google.accounts) {
+        if (!GOOGLE_CLIENT_ID) {
+            console.warn('Google Client ID not configured. Please add your Client ID in scripts/main.js');
+            // Show a styled sign-in button placeholder
+            googleSigninContainer.innerHTML = `
+                <button class="custom-signin-btn" onclick="alert('Please configure Google Client ID in scripts/main.js')">
+                    <svg width="18" height="18" viewBox="0 0 18 18" style="margin-right: 8px;">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.965-2.184l-2.908-2.258c-.806.54-1.837.86-3.057.86-2.35 0-4.34-1.587-5.053-3.72H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+                        <path fill="#FBBC05" d="M3.943 10.698c-.18-.54-.282-1.117-.282-1.698s.102-1.158.282-1.698V4.97H.957C.348 6.175 0 7.55 0 9s.348 2.825.957 4.03l2.986-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.97L3.943 7.302C4.66 5.167 6.65 3.58 9 3.58z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+            `;
+            return;
+        }
+
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true
+        });
+
+        // Render sign-in button with minimal styling
+        google.accounts.id.renderButton(
+            googleSigninContainer,
+            {
+                type: 'standard',
+                theme: 'filled_blue',
+                size: 'medium',
+                text: 'signin_with',
+                shape: 'rectangular',
+                logo_alignment: 'left',
+                width: 200,
+                locale: 'en'
+            }
+        );
+    }
+}
+
+// Handle Google Sign-In response
+function handleCredentialResponse(response) {
+    try {
+        // Decode JWT token (basic decode without verification for frontend)
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const credential = JSON.parse(jsonPayload);
+
+        // Store user data
+        currentUser = {
+            id: credential.sub,
+            name: credential.name,
+            email: credential.email,
+            picture: credential.picture
+        };
+
+        // Update UI
+        updateHeaderUI();
+        isSigningIn = false;
+
+        // If we were in the process of sending a message, continue
+        if (window.pendingMessage) {
+            sendEmailMessage(window.pendingMessage);
+            window.pendingMessage = null;
+        }
+    } catch (error) {
+        console.error('Error handling credential response:', error);
+        showNotification('Sign-in failed. Please try again.', 'error');
+        isSigningIn = false;
+    }
+}
+
+// Trigger Google Sign-In popup
+function triggerGoogleSignIn() {
+    if (isSigningIn || !googleSigninContainer) return;
+    
+    isSigningIn = true;
+    
+    // Programmatically click the Google Sign-In button to trigger popup
+    const findAndClickButton = (attempts = 0) => {
+        if (!googleSigninContainer) {
+            isSigningIn = false;
+            return;
+        }
+        
+        const button = googleSigninContainer.querySelector('div[role="button"], iframe');
+        if (button) {
+            // Try clicking the button directly
+            if (button.click) {
+                button.click();
+            } else {
+                // If it's an iframe, try to find the button inside
+                try {
+                    const iframeDoc = button.contentDocument || button.contentWindow.document;
+                    const innerButton = iframeDoc.querySelector('div[role="button"]');
+                    if (innerButton) {
+                        innerButton.click();
+                    } else {
+                        // Fallback: dispatch click event
+                        const clickEvent = new MouseEvent('click', {
+                            view: window,
+                            bubbles: true,
+                            cancelable: true
+                        });
+                        button.dispatchEvent(clickEvent);
+                    }
+                } catch (e) {
+                    // Cross-origin iframe, try direct click
+                    if (button.click) button.click();
+                }
+            }
+        } else if (attempts < 5) {
+            // Retry if button isn't ready yet
+            setTimeout(() => findAndClickButton(attempts + 1), 300);
+        } else {
+            isSigningIn = false;
+            showNotification('Please click the Sign-In button in the header.', 'info');
+        }
+    };
+    
+    findAndClickButton();
+}
+
+// Logout function
+function handleLogout() {
+    currentUser = null;
+    updateHeaderUI();
+    
+    // Clear any pending messages
+    window.pendingMessage = null;
+    
+    // Sign out from Google
+    if (typeof google !== 'undefined' && google.accounts) {
+        google.accounts.id.disableAutoSelect();
+    }
+    
+    showNotification('Signed out successfully', 'success');
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'error' ? '#ff4444' : type === 'success' ? '#00ff88' : 'var(--color-primary)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Add notification animations to CSS dynamically
+if (!document.getElementById('notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Send email via EmailJS
+function sendEmailMessage(formData) {
+    if (!currentUser) {
+        showNotification('Please sign in to send a message', 'error');
+        return;
+    }
+
+    const submitButton = contactForm.querySelector('.btn-submit');
+    const originalText = submitButton.innerHTML;
+    
+    submitButton.innerHTML = '<span>Sending...</span>';
+    submitButton.disabled = true;
+
+    const browserInfo = getBrowserInfo();
+    const submissionDate = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZoneName: 'short'
+    });
+
+    // Prepare email template parameters
+    const templateParams = {
+        from_name: currentUser.name,
+        from_email: currentUser.email,
+        subject: formData.subject,
+        message: formData.message,
+        user_id: currentUser.id,
+        browser: browserInfo.browser,
+        device_type: browserInfo.deviceType,
+        operating_system: browserInfo.os,
+        submission_date: submissionDate
+    };
+
+    // Send email via EmailJS
+    if (typeof emailjs !== 'undefined') {
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+            .then((response) => {
+                submitButton.innerHTML = '<span>Message Sent!</span>';
+                submitButton.style.background = 'linear-gradient(135deg, #00ff88 0%, #00cc6a 100%)';
+                showNotification('Message sent successfully!', 'success');
+                
+                // Reset form
+                contactForm.reset();
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                    submitButton.style.background = '';
+                }, 3000);
+            })
+            .catch((error) => {
+                console.error('EmailJS Error:', error);
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+                showNotification('Failed to send message. Please try again.', 'error');
+            });
+    } else {
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+        showNotification('Email service not available. Please try again later.', 'error');
+    }
+}
+
+// Contact Form Handling with Smart Sign-In
 if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // Get form data
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
-        
-        // Simulate form submission (frontend only)
-        const submitButton = contactForm.querySelector('.btn-submit');
-        const originalText = submitButton.innerHTML;
-        
-        submitButton.innerHTML = '<span>Sending...</span>';
-        submitButton.disabled = true;
-        
-        // Simulate API call
-        setTimeout(() => {
-            submitButton.innerHTML = '<span>Message Sent!</span>';
-            submitButton.style.background = 'linear-gradient(135deg, #00ff88 0%, #00cc6a 100%)';
+        const formData = {
+            subject: document.getElementById('subject').value.trim(),
+            message: document.getElementById('message').value.trim()
+        };
+
+        // Validate form
+        if (!formData.subject || !formData.message) {
+            showNotification('Please fill in all fields', 'error');
+            return;
+        }
+
+        // Check if user is signed in
+        if (!currentUser) {
+            // Store the message data
+            window.pendingMessage = formData;
             
-            // Reset form
-            contactForm.reset();
+            // Show notification
+            showNotification('Signing in to send your message...', 'info');
             
-            // Reset button after 3 seconds
-            setTimeout(() => {
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-                submitButton.style.background = '';
-            }, 3000);
-        }, 1500);
-        
-        // Log form data (for development)
-        console.log('Form submitted:', data);
+            // Trigger Google Sign-In
+            triggerGoogleSignIn();
+        } else {
+            // User is signed in - send immediately
+            sendEmailMessage(formData);
+        }
     });
 }
+
+
+// Initialize Google Sign-In when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize DOM element references
+    googleSigninContainer = document.getElementById('google-signin-button');
+    userProfile = document.getElementById('user-profile');
+    userAvatar = document.getElementById('user-avatar');
+    logoutButton = document.getElementById('logout-button');
+    
+    // Logout button handler
+    if (logoutButton) {
+        logoutButton.addEventListener('click', handleLogout);
+    }
+    
+    // Wait for Google Identity Services to load
+    const checkGoogle = setInterval(() => {
+        if (typeof google !== 'undefined' && google.accounts) {
+            clearInterval(checkGoogle);
+            initializeGoogleSignIn();
+            updateHeaderUI();
+        }
+    }, 100);
+
+    // Timeout after 5 seconds
+    setTimeout(() => {
+        clearInterval(checkGoogle);
+        if (typeof google === 'undefined' || !google.accounts) {
+            console.warn('Google Identity Services failed to load');
+        }
+    }, 5000);
+});
 
 // Parallax Effect for Hero Section
 window.addEventListener('scroll', () => {
