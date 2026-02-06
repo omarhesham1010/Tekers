@@ -179,7 +179,7 @@ statNumbers.forEach(stat => {
 // Configuration
 // IMPORTANT: Replace with your Google OAuth 2.0 Client ID from Google Cloud Console
 // Get it from: https://console.cloud.google.com/apis/credentials
-const GOOGLE_CLIENT_ID = '1044015226252-0844n792h6l2116g6d33u83e9t2ot09s.apps.googleusercontent.com'; // e.g., '123456789-abcdefghijklmnop.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = '1077996978994-o02a67ascf2qkjc6ruumqa7o8g4n94es.apps.googleusercontent.com';
 
 // User state management
 let currentUser = null;
