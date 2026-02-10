@@ -21,6 +21,10 @@ const HEADER_HTML = `
             <li><a href="index.html#contact" class="nav-link">Contact</a></li>
         </ul>
         <div class="nav-auth" id="nav-auth">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark/Light Mode">
+                <i class="fas fa-moon"></i>
+            </button>
             <div class="signin-wrapper" id="signin-wrapper">
                 <div id="google-signin-button" class="google-btn-hidden"></div>
                 <button class="btn btn-primary btn-custom-signin" style="padding: 0 1.6rem">
@@ -194,6 +198,45 @@ const loadComponent = (id, htmlContent) => {
     }
 };
 
+// Theme Management
+const initTheme = () => {
+    const toggleBtn = document.getElementById('theme-toggle');
+    const icon = toggleBtn.querySelector('i');
+    const body = document.body;
+
+    // Check saved theme
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    } else {
+        // Default is dark
+        body.classList.remove('light-mode');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    }
+
+    // Toggle event
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('light-mode');
+        const isLight = body.classList.contains('light-mode');
+
+        // Update icon
+        if (isLight) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     loadDependencies();
@@ -202,6 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadComponent('header', HEADER_HTML);
     loadComponent('footer', FOOTER_HTML);
     loadComponent('whatsapp', WHATSAPP_HTML);
+
+    // Initialize Theme after header injection
+    initTheme();
 
     // Dispatch event for main.js
     // Small timeout to ensure DOM is settled
