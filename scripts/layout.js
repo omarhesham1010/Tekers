@@ -87,10 +87,22 @@ const FOOTER_HTML = `
                 </div>
                 <div class="footer-column">
                     <h4>Connect</h4>
-                    <ul>
-                        <li><a href="index.html#contact">Contact</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">Twitter</a></li>
+                    <ul class="social-links">
+                        <li>
+                            <a href="https://www.facebook.com/tekers.official" target="_blank" style="color: #1877F2; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                                <i class="fab fa-facebook" style="font-size: 1.2rem;"></i> Facebook
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.instagram.com/tekers.official/" target="_blank" style="color: #E4405F; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                                <i class="fab fa-instagram" style="font-size: 1.2rem;"></i> Instagram
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.tiktok.com/@tekers.official" target="_blank" style="color: #0000FF; display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                                <i class="fab fa-tiktok" style="font-size: 1.2rem;"></i> TikTok
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
