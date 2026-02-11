@@ -82,29 +82,41 @@ const FOOTER_HTML = `
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Case Studies</a></li>
-                        <li><a href="#">Documentation</a></li>
+                    <h4>Explore</h4>
+                    <ul class="special-links">
+                        <li>
+                            <a href="pages/blogs/index.html" class="link-blog">
+                                <i class="fas fa-lightbulb"></i>
+                                Blog
+                            </a>
+                        </li>
+                        <li>
+                            <a href="pages/policies/index.html" class="link-policies">
+                                <i class="fas fa-shield-alt"></i>
+                                Policies & Terms
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h4>Connect</h4>
-                    <ul class="social-links">
+                    <ul class="special-links">
                         <li>
-                            <a href="https://www.facebook.com/tekers.official" target="_blank" style="color: #1877F2; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                                <i class="fab fa-facebook" style="font-size: 1.2rem;"></i> Facebook
+                            <a href="https://www.facebook.com/tekers.official" target="_blank" class="link-facebook">
+                                <i class="fab fa-facebook"></i>
+                                Facebook
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.instagram.com/tekers.official/" target="_blank" style="color: #E4405F; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                                <i class="fab fa-instagram" style="font-size: 1.2rem;"></i> Instagram
+                            <a href="https://www.instagram.com/tekers.official/" target="_blank" class="link-instagram">
+                                <i class="fab fa-instagram"></i>
+                                Instagram
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.tiktok.com/@tekers.official" target="_blank" style="color: #0000FF; display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                                <i class="fab fa-tiktok" style="font-size: 1.2rem;"></i> TikTok
+                            <a href="https://www.tiktok.com/@tekers.official" target="_blank" class="link-tiktok">
+                                <i class="fab fa-tiktok"></i>
+                                TikTok
                             </a>
                         </li>
                     </ul>

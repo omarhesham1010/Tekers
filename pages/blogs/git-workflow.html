@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Practical Git Workflow - Tekers Blog</title>
+    <base href="../../"> <!-- Fix relative paths -->
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <section class="section article-section">
+        <div class="container">
+            <div class="back-link-wrapper" style="margin-bottom: 2rem;">
+                <a href="pages/blogs/index.html" class="back-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Back to Blog
+                </a>
+            </div>
+
+            <header class="article-header">
+                <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3.5rem);">A Practical Git Workflow for Growing
+                    Development Teams</h1>
+                <div class="article-meta">
+                    <span><i class="far fa-calendar"></i> Oct 24, 2024</span> &bull; <span><i class="far fa-user"></i>
+                        Tekers Engineering Team</span>
+                </div>
+            </header>
+
+            <div class="article-body">
+                <p>
+                    When you're a solo developer or a team of two, Git is easy. You commit, you push, maybe you merge,
+                    and everything works. But as soon as you add a third, fourth, or fifth person, things start to
+                    break. Merge conflicts pile up, broken code sneaks into production, and suddenly, "deploying"
+                    becomes a stressful event.
+                </p>
+
+                <p>
+                    At Tekers, we care deeply about systems—not just code systems, but human systems. Here is the Git
+                    workflow we use to keep our collaboration clean, honest, and efficient.
+                </p>
+
+                <h2>1. The Holy Main Branch</h2>
+                <p>
+                    Rule #1: <strong>The <code>main</code> branch is sacred.</strong>
+                </p>
+                <p>
+                    It should always be deployable. If you checkout <code>main</code>, the app should run. No
+                    exceptions. We never commit directly to main. It is the source of truth, and we treat it with
+                    respect.
+                </p>
+
+                <h2>2. Feature Branches & Ownership</h2>
+                <p>
+                    Every task gets a branch. We name them clearly so anyone knows what's happening just by looking at
+                    the branch list.
+                </p>
+                <ul>
+                    <li><code>feature/user-auth</code></li>
+                    <li><code>fix/header-alignment</code></li>
+                    <li><code>refactor/database-schema</code></li>
+                </ul>
+                <p>
+                    When you are working on a branch, you own it. It's your workspace. But keep it short-lived. The
+                    longer a branch lives, the harder it is to merge.
+                </p>
+
+                <h2>3. Clear Commit Messages</h2>
+                <p>
+                    "Fixed stuff" is not a commit message. Your future self (and your teammates) will hate you for it.
+                    We write messages that explain <em>why</em>, not just <em>what</em>.
+                </p>
+                <p>
+                    <strong>Bad:</strong> <code>update CSS</code><br>
+                    <strong>Good:</strong> <code>Fix mobile padding on contact form to prevent overflow</code>
+                </p>
+
+                <h2>4. The Pull Request Mindset</h2>
+                <p>
+                    A Pull Request (PR) isn't just "merge my code." It's a request for a second pair of eyes. It's a
+                    learning opportunity.
+                </p>
+                <ul>
+                    <li><strong>Review your own code first.</strong> comprehensive self-review catches 80% of silly
+                        mistakes.</li>
+                    <li><strong>Keep it small.</strong> Reviewing 200 lines is easy. Reviewing 2,000 lines is
+                        impossible.</li>
+                    <li><strong>Be kind.</strong> Code reviews are about the code, not the person.</li>
+                </ul>
+
+                <h2>5. Clean Up After Yourself</h2>
+                <p>
+                    Once a branch is merged, delete it. Keep the repository clean. A cluttered repo is a cluttered mind.
+                </p>
+
+                <h2>Conclusion</h2>
+                <p>
+                    This interaction isn't just about tools; it's about communication. Good software is built by teams
+                    who communicate well. By respecting the workflow, we respect each other's time and focus.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer"></div>
+    <div id="whatsapp"></div>
+
+    <script src="scripts/main.js"></script>
+    <script src="scripts/layout.js"></script>
+</body>
+
+</html>
