@@ -2476,6 +2476,46 @@ body.light-mode .project-card p {
     /* Glow effect using the text color */
 }
 
+/* Article Code Blocks */
+pre {
+    background: #1e1e2e;
+    /* Darker background for code */
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+/* Inline code style vs block code style */
+p code,
+li code {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--color-primary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+}
+
+pre code {
+    background: transparent;
+    color: #a9b7c6;
+    /* Default text color for code block */
+    padding: 0;
+}
+
+/* Simple Syntax Highlighting manual classes if needed later, 
+   but for now distinct color for comments in examples */
+pre code .comment {
+    color: #6a9955;
+}
+
 /* Mobile Adjustments for Blog */
 @media (max-width: 768px) {
     .blog-grid {

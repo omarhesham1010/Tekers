@@ -42,74 +42,156 @@
 
             <div class="article-body">
                 <p>
-                    When you're a solo developer or a team of two, Git is easy. You commit, you push, maybe you merge,
-                    and everything works. But as soon as you add a third, fourth, or fifth person, things start to
-                    break. Merge conflicts pile up, broken code sneaks into production, and suddenly, "deploying"
-                    becomes a stressful event.
+                    When you're coding alone, Git feels like a simple "save button" with superpowers. You write code,
+                    commit it, push it, and everything just works. But the moment you add a second or third person to
+                    the mix, things get… interesting.
+                </p>
+                <p>
+                    Suddenly, you can't push because "remote contains work you don't have." You merge a branch and half
+                    your code disappears. Your teammate breaks the main site while you're asleep. This is where teams
+                    struggle—not because Git is broken, but because they lack a workflow.
+                </p>
+                <p>
+                    At Tekers, we believe engineering should be calm, not chaotic. Here is the exact workflow we use to
+                    keep our team moving fast without breaking things.
                 </p>
 
+                <h2>1. Git Basics (For Absolute Beginners)</h2>
                 <p>
-                    At Tekers, we care deeply about systems—not just code systems, but human systems. Here is the Git
-                    workflow we use to keep our collaboration clean, honest, and efficient.
-                </p>
-
-                <h2>1. The Holy Main Branch</h2>
-                <p>
-                    Rule #1: <strong>The <code>main</code> branch is sacred.</strong>
-                </p>
-                <p>
-                    It should always be deployable. If you checkout <code>main</code>, the app should run. No
-                    exceptions. We never commit directly to main. It is the source of truth, and we treat it with
-                    respect.
-                </p>
-
-                <h2>2. Feature Branches & Ownership</h2>
-                <p>
-                    Every task gets a branch. We name them clearly so anyone knows what's happening just by looking at
-                    the branch list.
+                    Before we dive into the workflow, let's make sure we speak the same language. If you just installed
+                    Git, here is what you need to know:
                 </p>
                 <ul>
-                    <li><code>feature/user-auth</code></li>
-                    <li><code>fix/header-alignment</code></li>
-                    <li><code>refactor/database-schema</code></li>
+                    <li><strong>Repository ("Repo"):</strong> The folder where your project lives. Think of it as the
+                        project folder, plus a hidden database of every change ever made.</li>
+                    <li><strong>Branch:</strong> A parallel version of your code. You can create a branch to test an
+                        idea without messing up the main project.</li>
+                    <li><strong>Commit:</strong> A snapshot of your code at a specific moment. It's like a save point
+                        in a video game.</li>
+                    <li><strong>Origin:</strong> The version of your project that lives on the internet (GitHub, GitLab,
+                        Bitbucket). It's the central hub.</li>
                 </ul>
+
+                <h2>2. The Role of the Main Branch</h2>
                 <p>
-                    When you are working on a branch, you own it. It's your workspace. But keep it short-lived. The
-                    longer a branch lives, the harder it is to merge.
+                    In a team, the <code>main</code> branch is sacred.
+                </p>
+                <p>
+                    <strong>Rule #1: Never work directly on main.</strong>
+                </p>
+                <p>
+                    The <code>main</code> branch should always be deployable. If a new developer joins the team and
+                    clones the repo, the code in <code>main</code> must work immediately. If you push broken code to
+                    main, you block everyone else from working.
                 </p>
 
-                <h2>3. Clear Commit Messages</h2>
+                <h2>3. Creating a Feature Branch</h2>
                 <p>
-                    "Fixed stuff" is not a commit message. Your future self (and your teammates) will hate you for it.
-                    We write messages that explain <em>why</em>, not just <em>what</em>.
+                    Every time you start a task—whether it's building a login form or fixing a typo—you create a new
+                    home for that work. We call this a "Feature Branch."
                 </p>
                 <p>
-                    <strong>Bad:</strong> <code>update CSS</code><br>
-                    <strong>Good:</strong> <code>Fix mobile padding on contact form to prevent overflow</code>
+                    <strong>Step 1:</strong> Go to the main branch and make sure it's up to date.
+                </p>
+                <pre><code class="language-bash">git checkout main
+git pull origin main</code></pre>
+
+                <p>
+                    <strong>Step 2:</strong> Create your new branch. Give it a descriptive name so we know what it does.
+                </p>
+                <pre><code class="language-bash">git checkout -b feature/login-page</code></pre>
+                <p>
+                    Now you are in a safe sandbox. You can delete files, break things, and experiment without hurting
+                    anyone else.
                 </p>
 
-                <h2>4. The Pull Request Mindset</h2>
+                <h2>4. Daily Work Routine</h2>
                 <p>
-                    A Pull Request (PR) isn't just "merge my code." It's a request for a second pair of eyes. It's a
-                    learning opportunity.
+                    You've written some code. Now what? You need to save your progress.
+                </p>
+                <p>
+                    <strong>Don't wait until the end of the week to commit.</strong> Commit often. Small commits are
+                    easy to understand and easy to fix if something goes wrong.
+                </p>
+
+                <h3>How to Commit Properly</h3>
+                <pre><code class="language-bash"># 1. Check which files you changed
+git status
+
+# 2. Add files to the staging area
+git add .
+
+# 3. Save the snapshot with a message
+git commit -m "Add email validation to login form"</code></pre>
+
+                <h3>Writing Good Commit Messages</h3>
+                <p>
+                    "Update code" is a useless message. Write for humans. Explain <em>what</em> you did and
+                    <em>why</em>.
                 </p>
                 <ul>
-                    <li><strong>Review your own code first.</strong> comprehensive self-review catches 80% of silly
-                        mistakes.</li>
-                    <li><strong>Keep it small.</strong> Reviewing 200 lines is easy. Reviewing 2,000 lines is
-                        impossible.</li>
-                    <li><strong>Be kind.</strong> Code reviews are about the code, not the person.</li>
+                    <li>❌ <code>Fixed it</code></li>
+                    <li>❌ <code>WIP</code></li>
+                    <li>✅ <code>Fix navigation bar overlap on mobile screens</code></li>
                 </ul>
 
-                <h2>5. Clean Up After Yourself</h2>
                 <p>
-                    Once a branch is merged, delete it. Keep the repository clean. A cluttered repo is a cluttered mind.
+                    Once you have committed your work, push it to the cloud so your team can see it (and so you have a
+                    backup!).
+                </p>
+                <pre><code class="language-bash">git push origin feature/login-page</code></pre>
+
+                <h2>5. Understanding Merge</h2>
+                <p>
+                    "Merging" is simply taking the history of two branches and combining them.
+                </p>
+                <p>
+                    When you are done with your feature, you want to bring your changes back into <code>main</code>.
+                    Usually, you do this via a "Pull Request" on GitHub/GitLab, but understanding the command is
+                    vital.
+                </p>
+                <pre><code class="language-bash"># 1. Switch back to main
+git checkout main
+
+# 2. Update main (someone else might have pushed while you were working)
+git pull origin main
+
+# 3. Merge your feature into main
+git merge feature/login-page</code></pre>
+
+                <h3>What is a "Conflict"?</h3>
+                <p>
+                    A conflict happens when two people change the exact same line of code in different ways. Git is
+                    smart, but it can't read minds. It stops and asks you: "Which version do you want to keep?"
+                </p>
+                <p>
+                    Don't panic. Open the file, look for the markers (<code><<<<<<<</code>), pick the correct code, and
+                    commit the fix.
                 </p>
 
-                <h2>Conclusion</h2>
+                <h2>6. Common Mistakes to Avoid</h2>
+                <ul>
+                    <li><strong>Working on main:</strong> We said it before, but it bears repeating. Don't do it.</li>
+                    <li><strong>Huge Commits:</strong> Changing 50 files in one commit makes it impossible to review.
+                        Keep it small.</li>
+                    <li><strong>Ignoring Updates:</strong> Always <code>git pull</code> before you start your day. If
+                        you work on old code, you guarantee conflicts later.</li>
+                    <li><strong>Vague Messages:</strong> Be specific. Your future self will thank you.</li>
+                </ul>
+
+                <h2>7. The Tekers Workflow Summary</h2>
                 <p>
-                    This interaction isn't just about tools; it's about communication. Good software is built by teams
-                    who communicate well. By respecting the workflow, we respect each other's time and focus.
+                    To keep our team happy and our code clean, we follow these simple rules:
+                </p>
+                <ol>
+                    <li>Always <strong>pull</strong> <code>main</code> before starting.</li>
+                    <li>One task = One <strong>branch</strong>.</li>
+                    <li><strong>Commit</strong> often with clear messages.</li>
+                    <li><strong>Push</strong> your branch to backup your work.</li>
+                    <li><strong>Merge</strong> only when the feature is complete and tested.</li>
+                </ol>
+                <p>
+                    Git is a tool for communication. Use it to tell a clear story about how your software is evolving.
                 </p>
             </div>
         </div>
@@ -120,6 +202,9 @@
 
     <script src="scripts/main.js"></script>
     <script src="scripts/layout.js"></script>
+
+    <!-- Prism.js for Syntax Highlighting (Optional but recommended) -->
+    <!-- We will style code blocks manually in CSS for now -->
 </body>
 
 </html>
